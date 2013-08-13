@@ -147,9 +147,17 @@ typedef enum : NSUInteger {
 *   @return An initialized map view, or `nil` if the map view was unable to be initialized. */
 - (id)initWithFrame:(CGRect)frame andTilesource:(id <RMTileSource>)newTilesource;
 
+/** Initialize a map view with a given frame, tile source and tile cache.
+ *   @param frame The frame with which to initialize the map view.
+ *   @param newTilesource The tile source to use for the map tiles.
+ *   @param tileCache The tile cache to use for the map tiles.
+ *   @return An initialized map view, or `nil` if the map view was unable to be initialized. */
+- (id)initWithFrame:(CGRect)frame tilesource:(id <RMTileSource>)newTilesource andTileCache:(RMTileCache *)tileCache;
+
 /** Designated initializer. Initialize a map view. 
 *   @param frame The map view's frame. 
 *   @param newTilesource A tile source to use for the map tiles. 
+*   @param tileCache The tile cache to use for the map tiles.
 *   @param initialCenterCoordinate The starting map center coordinate.
 *   @param initialTileSourceZoomLevel The starting map zoom level, clamped to the zoom levels supported by the tile source(s).
 *   @param initialTileSourceMaxZoomLevel The maximum zoom level allowed by the map view, clamped to the zoom levels supported by the tile source(s).
@@ -157,7 +165,8 @@ typedef enum : NSUInteger {
 *   @param backgroundImage A custom background image to use behind the map instead of the default gridded tile background that moves with the map. 
 *   @return An initialized map view, or `nil` if a map view was unable to be initialized. */
 - (id)initWithFrame:(CGRect)frame
-      andTilesource:(id <RMTileSource>)newTilesource
+         tilesource:(id <RMTileSource>)newTilesource
+       andTileCache:(RMTileCache *)tileCache
    centerCoordinate:(CLLocationCoordinate2D)initialCenterCoordinate
           zoomLevel:(float)initialTileSourceZoomLevel
        maxZoomLevel:(float)initialTileSourceMaxZoomLevel

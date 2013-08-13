@@ -222,6 +222,7 @@
 #pragma mark Initialization
 
 - (void)performInitializationWithTilesource:(id <RMTileSource>)newTilesource
+                               andTileCache:(RMTileCache *)tileCache
                            centerCoordinate:(CLLocationCoordinate2D)initialCenterCoordinate
                                   zoomLevel:(float)initialTileSourceZoomLevel
                                maxZoomLevel:(float)initialTileSourceMaxZoomLevel
@@ -269,7 +270,7 @@
     _zoomDelegateQueue = [NSOperationQueue new];
     [_zoomDelegateQueue setMaxConcurrentOperationCount:1];
 
-    [self setTileCache:[RMTileCache new]];
+    [self setTileCache:tileCache];
 
     if (backgroundImage)
     {
@@ -327,6 +328,7 @@
 	coordinate.longitude = kDefaultInitialLongitude;
 
     [self performInitializationWithTilesource:[RMMapBoxSource new]
+                                 andTileCache:[RMTileCache new]
                              centerCoordinate:coordinate
                                     zoomLevel:kDefaultInitialZoomLevel
                                  maxZoomLevel:kDefaultMaximumZoomLevel
@@ -343,12 +345,18 @@
 
 - (id)initWithFrame:(CGRect)frame andTilesource:(id <RMTileSource>)newTilesource
 {
+    return [self initWithFrame:frame tilesource:newTilesource andTileCache:[RMTileCache new]];
+}
+
+- (id)initWithFrame:(CGRect)frame tilesource:(id <RMTileSource>)newTilesource andTileCache:(RMTileCache *)tileCache
+{
 	CLLocationCoordinate2D coordinate;
 	coordinate.latitude = kDefaultInitialLatitude;
 	coordinate.longitude = kDefaultInitialLongitude;
 
 	return [self initWithFrame:frame
-                 andTilesource:newTilesource
+                    tilesource:newTilesource
+                  andTileCache:tileCache
               centerCoordinate:coordinate
                      zoomLevel:kDefaultInitialZoomLevel
                   maxZoomLevel:kDefaultMaximumZoomLevel
@@ -357,7 +365,8 @@
 }
 
 - (id)initWithFrame:(CGRect)frame
-      andTilesource:(id <RMTileSource>)newTilesource
+         tilesource:(id <RMTileSource>)newTilesource
+       andTileCache:(RMTileCache *)tileCache
    centerCoordinate:(CLLocationCoordinate2D)initialCenterCoordinate
           zoomLevel:(float)initialZoomLevel
        maxZoomLevel:(float)maxZoomLevel
@@ -368,6 +377,7 @@
         return nil;
 
     [self performInitializationWithTilesource:newTilesource
+                                 andTileCache:tileCache
                              centerCoordinate:initialCenterCoordinate
                                     zoomLevel:initialZoomLevel
                                  maxZoomLevel:maxZoomLevel
