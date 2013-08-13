@@ -6,6 +6,21 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		736C28B917B9CBA000EAD1DE /* libMapBox-combined */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 736C28BC17B9CBA000EAD1DE /* Build configuration list for PBXAggregateTarget "libMapBox-combined" */;
+			buildPhases = (
+				736C28BF17B9CBC000EAD1DE /* ShellScript */,
+			);
+			dependencies = (
+				736C28BE17B9CBB100EAD1DE /* PBXTargetDependency */,
+			);
+			name = "libMapBox-combined";
+			productName = "libMapBox-combined";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		126693040EB76C0B00E002D5 /* RMConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 126692A00EB75C0A00E002D5 /* RMConfiguration.m */; };
 		1606C9FE13D86BA400547581 /* RMOpenCycleMapSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1606C9FC13D86BA300547581 /* RMOpenCycleMapSource.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -154,6 +169,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		736C28BD17B9CBB100EAD1DE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B8C974130E8A19B2007D16AD;
+			remoteInfo = MapView;
+		};
 		DD6A838F1644A2810097F31F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -793,6 +815,7 @@
 			targets = (
 				B8C974130E8A19B2007D16AD /* MapView */,
 				DD6A83741644A20C0097F31F /* Resources */,
+				736C28B917B9CBA000EAD1DE /* libMapBox-combined */,
 			);
 		};
 /* End PBXProject section */
@@ -826,6 +849,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		736C28BF17B9CBC000EAD1DE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm -f ${BUILT_PRODUCTS_DIR}/../libMapBox.a\n\nlipo -create ${BUILT_PRODUCTS_DIR}/../${CONFIGURATION}-iphonesimulator/libMapBox.a \\\n${BUILT_PRODUCTS_DIR}/../${CONFIGURATION}-iphoneos/libMapBox.a -output \\\n${BUILT_PRODUCTS_DIR}/../libMapBox.a\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B8C974340E8A19B2007D16AD /* Sources */ = {
@@ -900,6 +939,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		736C28BE17B9CBB100EAD1DE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B8C974130E8A19B2007D16AD /* MapView */;
+			targetProxy = 736C28BD17B9CBB100EAD1DE /* PBXContainerItemProxy */;
+		};
 		DD6A83901644A2810097F31F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DD6A83741644A20C0097F31F /* Resources */;
@@ -908,6 +952,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		736C28BA17B9CBA000EAD1DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		736C28BB17B9CBA000EAD1DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		B8C974570E8A19B2007D16AD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1072,6 +1130,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		736C28BC17B9CBA000EAD1DE /* Build configuration list for PBXAggregateTarget "libMapBox-combined" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				736C28BA17B9CBA000EAD1DE /* Debug */,
+				736C28BB17B9CBA000EAD1DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		B8C974560E8A19B2007D16AD /* Build configuration list for PBXNativeTarget "MapView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
