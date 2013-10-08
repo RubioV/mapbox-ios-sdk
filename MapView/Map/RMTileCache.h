@@ -137,8 +137,8 @@ typedef enum : short {
  *   @param cache A memory-based or disk-based cache. */
 - (void)removeCache:(id <RMTileCache>)cache;
 
-/** The list of caches managed by a cache manager. This could include memory-based, disk-based, or other types of caches. */
-@property (nonatomic, readonly, strong) NSArray *tileCaches;
+/** The list of caches managed by a cache manager. This could include memory-based, disk-based, or other types of caches conforming to the RMTileCache protocol. */
+@property (nonatomic, strong) NSArray *tileCaches;
 
 - (void)didReceiveMemoryWarning;
 

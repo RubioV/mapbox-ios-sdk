@@ -256,6 +256,10 @@
     _orderMarkersByYPosition = YES;
     _orderClusterMarkersAboveOthers = YES;
 
+    _zoom = initialTileSourceZoomLevel;
+    _maxZoom = initialTileSourceMaxZoomLevel;
+    _minZoom = initialTileSourceMinZoomLevel;
+    
     _annotations = [NSMutableSet new];
     _visibleAnnotations = [NSMutableSet new];
     [self setQuadTree:[[RMQuadTree alloc] initWithMapView:self]];
@@ -282,13 +286,16 @@
         [self setBackgroundView:nil];
     }
 
-    if (initialTileSourceMinZoomLevel < newTilesource.minZoom) initialTileSourceMinZoomLevel = newTilesource.minZoom;
-    if (initialTileSourceMaxZoomLevel > newTilesource.maxZoom) initialTileSourceMaxZoomLevel = newTilesource.maxZoom;
-    [self setTileSourcesMinZoom:initialTileSourceMinZoomLevel];
-    [self setTileSourcesMaxZoom:initialTileSourceMaxZoomLevel];
-    [self setTileSourcesZoom:initialTileSourceZoomLevel];
-
-    [self setTileSource:newTilesource];
+    if (newTilesource) // allow for init with nil tile source
+    {
+        if (initialTileSourceMinZoomLevel < newTilesource.minZoom) initialTileSourceMinZoomLevel = newTilesource.minZoom;
+        if (initialTileSourceMaxZoomLevel > newTilesource.maxZoom) initialTileSourceMaxZoomLevel = newTilesource.maxZoom;
+        [self setTileSourcesMinZoom:initialTileSourceMinZoomLevel];
+        [self setTileSourcesMaxZoom:initialTileSourceMaxZoomLevel];
+        [self setTileSourcesZoom:initialTileSourceZoomLevel];
+        [self setTileSource:newTilesource];
+    }
+    
     [self setCenterCoordinate:initialCenterCoordinate animated:NO];
 
     [self setDecelerationMode:RMMapDecelerationFast];
@@ -366,6 +373,24 @@
 
 - (id)initWithFrame:(CGRect)frame
          tilesource:(id <RMTileSource>)newTilesource
+   centerCoordinate:(CLLocationCoordinate2D)initialCenterCoordinate
+          zoomLevel:(float)initialZoomLevel
+       maxZoomLevel:(float)maxZoomLevel
+       minZoomLevel:(float)minZoomLevel
+    backgroundImage:(UIImage *)backgroundImage
+{
+	return [self initWithFrame:frame
+                    tilesource:newTilesource
+                  andTileCache:[RMTileCache new]
+              centerCoordinate:initialCenterCoordinate
+                     zoomLevel:initialZoomLevel
+                  maxZoomLevel:maxZoomLevel
+                  minZoomLevel:minZoomLevel
+               backgroundImage:backgroundImage];
+}
+
+- (id)initWithFrame:(CGRect)frame
+         tilesource:(id <RMTileSource>)newTilesource
        andTileCache:(RMTileCache *)tileCache
    centerCoordinate:(CLLocationCoordinate2D)initialCenterCoordinate
           zoomLevel:(float)initialZoomLevel
@@ -373,7 +398,7 @@
        minZoomLevel:(float)minZoomLevel
     backgroundImage:(UIImage *)backgroundImage
 {
-    if (!newTilesource || !(self = [super initWithFrame:frame]))
+    if (!(self = [super initWithFrame:frame]))
         return nil;
 
     [self performInitializationWithTilesource:newTilesource
@@ -2103,6 +2128,31 @@
     tileSourceTiledLayerView.layer.contents = nil;
     [tileSourceTiledLayerView removeFromSuperview];  tileSourceTiledLayerView = nil;
 
+    [self setCenterProjectedPoint:centerPoint animated:NO];
+}
+
+- (void)removeAllTileSources
+{
+    if ([_tileSourcesContainer.tileSources count] == 0)
+        return;
+    
+    RMProjectedPoint centerPoint = [self centerProjectedPoint];
+
+    for (id<RMTileSource> tileSource in _tileSourcesContainer.tileSources) {
+        // Remove the map layer
+        for (RMMapTiledLayerView *tiledLayerView in _tiledLayersSuperview.subviews)
+        {
+            if (tiledLayerView.tileSource == tileSource)
+            {
+                tiledLayerView.layer.contents = nil;
+                [tiledLayerView removeFromSuperview];
+                break;
+            }
+        }
+    }
+    
+    [_tileSourcesContainer removeAllTileSources];
+    _constrainMovement = NO;
     [self setCenterProjectedPoint:centerPoint animated:NO];
 }
 

@@ -174,6 +174,13 @@
     return [NSArray arrayWithArray:_tileCaches];
 }
 
+- (void)setTileCaches:(NSArray *)tileCaches
+{
+    dispatch_barrier_async(_tileCacheQueue, ^{
+        _tileCaches = [tileCaches mutableCopy];
+    });
+}
+
 + (NSNumber *)tileHash:(RMTile)tile
 {
 	return [NSNumber numberWithUnsignedLongLong:RMTileKey(tile)];
