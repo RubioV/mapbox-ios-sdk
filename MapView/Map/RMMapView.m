@@ -1510,19 +1510,21 @@
 {
     CALayer *hit = [_overlayView overlayHitTest:[recognizer locationInView:self]];
 
-    if (_currentAnnotation && ! [hit isEqual:_currentAnnotation.layer])
-    {
-        [self deselectAnnotation:_currentAnnotation animated:( ! [hit isKindOfClass:[RMMarker class]])];
-    }
-
     if ( ! hit)
     {
         [self singleTapAtPoint:[recognizer locationInView:self]];
+        if (_currentAnnotation)
+            [self deselectAnnotation:_currentAnnotation animated:YES];
         return;
     }
 
     CALayer *superlayer = [hit superlayer];
 
+    if (_currentAnnotation && ! [hit isEqual:_currentAnnotation.layer] && ! [superlayer isEqual:_currentAnnotation.layer])
+    {
+        [self deselectAnnotation:_currentAnnotation animated:( ! [hit isKindOfClass:[RMMarker class]])];
+    }
+    
     // See if tap was on an annotation layer or marker label and send delegate protocol method
     if ([hit isKindOfClass:[RMMapLayer class]])
     {
@@ -1530,7 +1532,11 @@
     }
     else if (superlayer != nil && [superlayer isKindOfClass:[RMMarker class]])
     {
-        [self tapOnLabelForAnnotation:[((RMMarker *)superlayer) annotation] atPoint:[recognizer locationInView:self]];
+        if (hit == ((RMMarker *)superlayer).imageLayer) {
+            [self tapOnAnnotation:[((RMMapLayer *)superlayer) annotation] atPoint:[recognizer locationInView:self]];
+        } else { // label was tapped
+            [self tapOnLabelForAnnotation:[((RMMarker *)superlayer) annotation] atPoint:[recognizer locationInView:self]];
+        }
     }
     else if ([superlayer superlayer] != nil && [[superlayer superlayer] isKindOfClass:[RMMarker class]])
     {
