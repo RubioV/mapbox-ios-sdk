@@ -54,6 +54,7 @@
     label = nil;
     textForegroundColor = [UIColor blackColor];
     textBackgroundColor = [UIColor clearColor];
+    _rotation = 0.0;
 
     return self;
 }
@@ -68,11 +69,16 @@
     if (!(self = [self init]))
         return nil;
 
-    self.contents = (id)[image CGImage];
-    self.contentsScale = image.scale;
+    self.imageLayer = [CALayer layer];
+    self.imageLayer.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     self.bounds = CGRectMake(0, 0, image.size.width, image.size.height);
+    self.imageLayer.contents = (id)[image CGImage];
+    self.imageLayer.contentsScale = image.scale;
+    self.imageLayer.anchorPoint = _anchorPoint;
     self.anchorPoint = _anchorPoint;
-
+    [self addSublayer:self.imageLayer];
+    
+    self.imageLayer.masksToBounds = NO;
     self.masksToBounds = NO;
     self.label = nil;
 
@@ -170,10 +176,15 @@
 
 - (void)replaceUIImage:(UIImage *)image anchorPoint:(CGPoint)_anchorPoint
 {
-    self.contents = (id)[image CGImage];
-    self.bounds = CGRectMake(0, 0, image.size.width, image.size.height);
+    self.imageLayer.contents = (id)[image CGImage];
+    self.imageLayer.contentsScale = image.scale;
+    self.imageLayer.bounds = CGRectMake(0, 0, image.size.width, image.size.height);
+    self.bounds = self.imageLayer.bounds;
+    self.imageLayer.anchorPoint = _anchorPoint;
     self.anchorPoint = _anchorPoint;
-
+    self.imageLayer.transform = CATransform3DConcat(CATransform3DInvert(self.transform), CATransform3DMakeRotation(self.rotation * M_PI / 180, 0.0, 0.0, 1.0));
+    
+    self.imageLayer.masksToBounds = NO;
     self.masksToBounds = NO;
 }
 
@@ -181,10 +192,10 @@
 {
     if (label == aView)
         return;
-
+    
     if (label != nil)
         [[label layer] removeFromSuperlayer];
-
+    
     if (aView != nil)
     {
         label = aView;
@@ -274,6 +285,18 @@
         [[self.label layer] removeFromSuperlayer];
         [self.label setHidden:YES];
     }
+}
+
+- (void)setTransform:(CATransform3D)transform
+{
+    [super setTransform:transform];
+    self.imageLayer.transform = CATransform3DConcat(CATransform3DInvert(transform), CATransform3DMakeRotation(self.rotation * M_PI / 180, 0.0, 0.0, 1.0));
+}
+
+- (void)setRotation:(CGFloat)rotation
+{
+    _rotation = rotation;
+    self.imageLayer.transform = CATransform3DConcat(CATransform3DInvert(self.transform), CATransform3DMakeRotation(rotation * M_PI / 180, 0.0, 0.0, 1.0));
 }
 
 @end

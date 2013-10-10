@@ -57,6 +57,10 @@ typedef enum {
 /** The marker object's label text background color. Defaults to clear. */
 @property (nonatomic, strong) UIColor *textBackgroundColor;
 
+/** The marker's rotation in degrees. Defaults to 0.0. Setting this to a non-zero value will rotate the marker the specified degrees around the anchor point. **/
+@property (nonatomic, assign) CGFloat rotation;
+@property (nonatomic, strong) CALayer *imageLayer;
+
 /** The font used for labels when another font is not explicitly requested. The default is the system font with size `15`. */
 + (UIFont *)defaultFont;
 
